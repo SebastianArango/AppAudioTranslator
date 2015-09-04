@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">TranslatorAudioApp</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="btnstop">Detener</string>
+    <string name="btnreproduce">Reproducir</string>
+    <string name="btnrecord">Grabar Audio</string>
 </resources>
