@@ -1,4 +1,4 @@
-package com.co.dayron.translatoraudioapp;
+package com.co.dayron.translatoraudioapp.activity;
 
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.co.dayron.translatoraudioapp.R;
 
 import java.io.File;
 import java.io.IOException;
