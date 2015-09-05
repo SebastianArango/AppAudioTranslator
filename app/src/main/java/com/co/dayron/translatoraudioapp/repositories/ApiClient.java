@@ -16,8 +16,7 @@ import retrofit.client.OkClient;
  */
 public class ApiClient {
 
-
-    private static final String API_BASE_PATH = "http://10.60.6.158:3000";
+    private static final String API_BASE_PATH = "http://10.60.26.113:3000";
     private static ApiClient INSTANCE = new ApiClient();
 
     public static ApiClient getInstance() {
@@ -28,16 +27,6 @@ public class ApiClient {
 
     public IRestClient getClient() {
         return apiClient;
-    }
-
-    private String token;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     private Context context;
@@ -52,15 +41,15 @@ public class ApiClient {
 
     private ApiClient() {
 
-        RequestInterceptor requestInterceptor = new RequestInterceptor() {
-            @Override
-            public void intercept(RequestFacade request) {
-                request.addHeader("Accept", "*/*");
-                String token = INSTANCE.getToken();
-                if (token != null && !token.isEmpty())
-                    request.addHeader("token", token);
-            }
-        };
+//        RequestInterceptor requestInterceptor = new RequestInterceptor() {
+//            @Override
+//            public void intercept(RequestFacade request) {
+//
+//
+//                if (token != null && !token.isEmpty())
+//                    request.addHeader("token", token);
+//            }
+//        };
         //TODO still need set custom error
 
         ConnectivityManager cm =
@@ -70,7 +59,7 @@ public class ApiClient {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(API_BASE_PATH)
                 .setClient(new ConnectivityAwareUrlClient(new OkClient(), cm))
-                .setRequestInterceptor(requestInterceptor)
+                //.setRequestInterceptor(requestInterceptor)
                 .build();
 
         apiClient = restAdapter.create(IRestClient.class);

@@ -4,4 +4,5 @@
     <string name="btnstop">Detener</string>
     <string name="btnreproduce">Reproducir</string>
     <string name="btnrecord">Grabar Audio</string>
+    <string name="btnsend">Traducir Audio</string>
 </resources>

@@ -12,7 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.co.dayron.translatoraudioapp.Callback;
 import com.co.dayron.translatoraudioapp.R;
+import com.co.dayron.translatoraudioapp.model.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +37,9 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
 
     @Bind(R.id.btnreproduce)
     Button btnreproduce;
+
+    @Bind(R.id.btnsend)
+    Button btnsend;
 
     //objeto para grabar el audio
     MediaRecorder recorder;
@@ -65,7 +70,7 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
         File path = new File(Environment.getExternalStorageDirectory().getPath());
         try {
 
-            fileAudio = File.createTempFile("temporal", ".3gp", path);
+            fileAudio = File.createTempFile("audio1", ".3gp", path);
         } catch (IOException e) {
         }
         recorder.setOutputFile(fileAudio.getAbsolutePath());
@@ -129,6 +134,24 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
         btnstop.setEnabled(true);
         btnreproduce.setEnabled(true);
         txtstatus.setText("Listo");
+
+    }
+
+    @OnClick(R.id.btnsend)
+    public void sendFileAudio(View view) {
+
+        Audio audio = new Audio();
+        audio.getAudioFile(fileAudio, new Callback<File>() {
+            @Override
+            public void complete(File data) {
+                File mTraslator = data;
+            }
+
+            @Override
+            public void failure(com.co.dayron.translatoraudioapp.model.Error error) {
+                Toast.makeText(getApplicationContext(), "No se logro traducir"+error.getMessaje().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 }
