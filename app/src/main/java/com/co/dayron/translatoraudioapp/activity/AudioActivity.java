@@ -2,6 +2,7 @@ package com.co.dayron.translatoraudioapp.activity;
 
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.rtp.AudioStream;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +14,10 @@ import android.widget.Toast;
 
 
 import com.co.dayron.translatoraudioapp.R;
-
+import com.ibm.watson.developer_cloud.text_to_speech.v1.TextToSpeech;
+import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
+import com.ibm.watson.developer_cloud.machine_translation.v1.MachineTranslation;
+import com.ibm.watson.developer_cloud.machine_translation.v1.model.Language;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
 
@@ -22,7 +26,11 @@ import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +61,10 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
     //objeto para grabar el audio
     MediaRecorder recorder;
     //objeto para reproducir el audio
-    MediaPlayer player;
+    MediaPlayer player1;
+
+
+    InputStream player;
     //objeto de referencia al archivo creado
     File fileAudio;
 
@@ -91,7 +102,7 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
 
         try {
 
-            fileAudio = File.createTempFile("audio1", ".3gp", path);
+            fileAudio = File.createTempFile("audio1", ".wav", path);
             route = fileAudio.toString();
         } catch (IOException e) {
         }
@@ -115,14 +126,14 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
         if (fileAudio!=null){
             recorder.stop();
             recorder.release();
-            player = new MediaPlayer();
-            player.setOnCompletionListener(this);
+            player1 = new MediaPlayer();
+            player1.setOnCompletionListener(this);
             try {
-                player.setDataSource(fileAudio.getAbsolutePath());
+                player1.setDataSource(fileAudio.getAbsolutePath());
             } catch (IOException e) {
             }
             try {
-                player.prepare();
+                player1.prepare();
             } catch (IOException e) {
             }
             btnrecord.setEnabled(true);
@@ -140,7 +151,7 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
 
     @OnClick(R.id.btnreproduce)
     public void reproduceAudio(View view) {
-        player.start();
+        player1.start();
         btnrecord.setEnabled(false);
         btnstop.setEnabled(false);
         btnreproduce.setEnabled(false);
@@ -166,19 +177,35 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
         SpeechToText service = new SpeechToText();
         service.setUsernameAndPassword("02b03789-07c1-4d2a-8b70-3d00e0536032", "z2ypCGYef2pT");
 
-        File audio = new File(Environment.getExternalStorageDirectory().getPath()+"/Download/sample1.wav");
-        //File audio = new File(route);
-        SpeechResults transcript = service.recognize(audio, "audio/3gp; rate=44100");
-        System.out.println(transcript);
+        File audio = new File(Environment.getExternalStorageDirectory().getPath()+"/sample1.wav");
+        SpeechResults transcript = service.recognize(audio, "audio/wav; rate=44100");
+
+        String messager =  transcript.getResults().get(0).getAlternatives().get(0).getTranscript();
+
+        MachineTranslation translationservice = new MachineTranslation();
+        translationservice.setUsernameAndPassword("02b03789-07c1-4d2a-8b70-3d00e0536032", "z2ypCGYef2pT");
 
 
-//
-//        TextToSpeech textservice = new TextToSpeech();
-//        textservice.setUsernameAndPassword("02b03789-07c1-4d2a-8b70-3d00e0536032", "z2ypCGYef2pT");
-//
-//        textservice.synthesize(transcript.toString(), );
-//        List<Voice> voices = textservice.getVoices();
-//        System.out.println(voices);
+        String response = translationservice.translate(messager, Language.ENGLISH, Language.SPANISH);
+
+        Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+
+
+
+        TextToSpeech messageVoice = new TextToSpeech();
+        messageVoice.setUsernameAndPassword("c1d2a5c7-6103-4999-ac99-7782eeb66bf4", "tdY2TyZbL54P");
+
+         player = messageVoice.synthesize(messager,"audio/wav; rate=44100");
+
+
+
+
+
+
+
+
+
+
 
 
 //        Audio audio = new Audio();
