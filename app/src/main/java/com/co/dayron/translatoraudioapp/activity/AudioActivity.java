@@ -2,6 +2,7 @@ package com.co.dayron.translatoraudioapp.activity;
 
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.rtp.AudioCodec;
 import android.net.rtp.AudioStream;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 
 import com.co.dayron.translatoraudioapp.R;
+import com.co.dayron.translatoraudioapp.model.Audio;
 import com.ibm.watson.developer_cloud.text_to_speech.v1.TextToSpeech;
 import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 import com.ibm.watson.developer_cloud.machine_translation.v1.MachineTranslation;
@@ -25,12 +27,16 @@ import com.ibm.watson.developer_cloud.text_to_speech.v1.TextToSpeech;
 import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
 
 
+import org.apache.http.conn.EofSensorInputStream;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -171,7 +177,7 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
     }
 
     @OnClick(R.id.btnsend)
-    public void sendFileAudio(View view) {
+    public void sendFileAudio(View view){
 
 
         SpeechToText service = new SpeechToText();
@@ -195,17 +201,14 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
         TextToSpeech messageVoice = new TextToSpeech();
         messageVoice.setUsernameAndPassword("c1d2a5c7-6103-4999-ac99-7782eeb66bf4", "tdY2TyZbL54P");
 
-         player = messageVoice.synthesize(messager,"audio/wav; rate=44100");
 
+        player = messageVoice.synthesize(messager,"audio/wav; rate=44100");
 
-
-
-
-
-
-
-
-
+        try {
+            convetInputStr(player);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
 //        Audio audio = new Audio();
@@ -225,5 +228,50 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
 
     }
 
+
+    public void  convetInputStr(InputStream input) throws IOException {
+
+
+            try {
+                File file = new File(Environment.getExternalStorageDirectory().getPath()+ "/audiotraducido.wav");
+                OutputStream out = new FileOutputStream(file);
+                byte[] buf = new byte[1024];
+                int len;
+                while((len=input.read(buf))>0){
+                    out.write(buf,0,len);
+                }
+                out.close();
+                input.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+
+//        try {
+//            File file = new File(Environment.getExternalStorageDirectory().getPath()+ "/audiotraducido.wav");
+//            OutputStream output = new FileOutputStream(file);
+//            try {
+//                try {
+//                    byte[] buffer = new byte[4 * 1024]; // or other buffer size
+//                    int read;
+//
+//                    while ((read = input.read(buffer)) != -1) {
+//                        output.write(buffer, 0, read);
+//                    }
+//                    output.flush();
+//                } finally {
+//                    output.close();
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace(); // handle exception, define IOException and others
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } finally {
+//            input.close();
+//        }
+
+    }
 
 }
