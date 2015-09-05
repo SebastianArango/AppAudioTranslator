@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -52,6 +53,10 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
     @Bind(R.id.txtstatus)
     TextView txtstatus;
 
+    @Bind(R.id.txtResul)
+    TextView txtResul;
+
+
     @Bind(R.id.btnrecord)
     Button btnrecord;
 
@@ -73,6 +78,8 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
     InputStream player;
     //objeto de referencia al archivo creado
     File fileAudio;
+
+    String mFileName = Environment.getExternalStorageDirectory().getPath()+"/nuestroAudio.wav";
 
     String route;
 
@@ -193,8 +200,7 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
 
 
         String response = translationservice.translate(messager, Language.ENGLISH, Language.SPANISH);
-
-        Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+        txtResul.setText(response);
 
 
 
@@ -202,7 +208,10 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
         messageVoice.setUsernameAndPassword("c1d2a5c7-6103-4999-ac99-7782eeb66bf4", "tdY2TyZbL54P");
 
 
-        player = messageVoice.synthesize(messager,"audio/wav; rate=44100");
+
+        player = messageVoice.synthesize(response,Voice.ES_LAURA);
+
+        InputStreamAFile(player);
 
         try {
             convetInputStr(player);
@@ -229,6 +238,38 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
     }
 
 
+    public void InputStreamAFile(InputStream entrada) {
+        try {
+            String mFileName = Environment.getExternalStorageDirectory()
+                    .getAbsolutePath();
+            mFileName += "/NuestroAudio.wav";
+            File f = new File(mFileName);
+            OutputStream salida = new FileOutputStream(f);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = entrada.read(buf)) > 0) {
+                salida.write(buf, 0, len);
+            }
+            salida.close();
+            entrada.close();
+            Log.i("result", "Se realizo la conversion con exito");
+        } catch (IOException e) {
+            Log.i("result", "Se produjo el error : " + e.toString());
+        }
+    }
+
+
+    public void startPlaying() {
+        player1 = new MediaPlayer();
+        try {
+            player1.setDataSource(mFileName);
+            player1.prepare();
+            player1.start();
+        } catch (IOException e) {
+            Log.e("", "prepare() failed");
+        }
+    }
+
     public void  convetInputStr(InputStream input) throws IOException {
 
 
@@ -245,6 +286,8 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+
 
 
 
