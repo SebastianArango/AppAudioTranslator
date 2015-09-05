@@ -21,20 +21,20 @@ public class Audio {
     }
 
 
-    public void getAudioFile(File audioFile, final Callback<File> callback) {
-        RepositorioAudio.getInstance().getFileAudio(audioFile, new Callback<File>() {
-                    @Override
-                    public void complete(File data) {
-                        callback.complete(data);
-                    }
+//    public void getAudioFile(File audioFile, final Callback<File> callback) {
+//        RepositorioAudio.getInstance().getFileAudio(audioFile, new Callback<File>() {
+//                    @Override
+//                    public void complete(File data) {
+//                        callback.complete(data);
+//                    }
+//
+//                    @Override
+//                    public void failure(Error error) {
+//                    callback.failure(error);
+//                    }
+//                }
+//
+//        );
 
-                    @Override
-                    public void failure(Error error) {
-                    callback.failure(error);
-                    }
-                }
-
-        );
-
-    }
+   // }
 }

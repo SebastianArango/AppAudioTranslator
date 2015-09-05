@@ -8,9 +8,9 @@ import com.co.dayron.translatoraudioapp.model.*;
 import com.co.dayron.translatoraudioapp.model.Error;
 
 import java.io.File;
-
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+//
+//import retrofit.RetrofitError;
+//import retrofit.client.Response;
 
 /**
  * Created by dayron on 9/4/15.
@@ -25,20 +25,20 @@ public class RepositorioAudio implements IRepositoryAudio {
     }
 
 
-    @Override
-    public void getFileAudio(File audioFile, final Callback<File> callback) {
-
-        IRestClient client = ApiClient.getInstance().getClient();
-        client.getAudioFile(audioFile, new retrofit.Callback<File>() {
-            @Override
-            public void success(File file, Response response) {
-                callback.complete(file);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure((Error) error.getBodyAs(com.co.dayron.translatoraudioapp.model.Error.class));
-            }
-        });
-    }
+//    @Override
+//    public void getFileAudio(File audioFile, final Callback<File> callback) {
+//
+////        IRestClient client = ApiClient.getInstance().getClient();
+////        client.getAudioFile(audioFile, new retrofit.Callback<File>() {
+////            @Override
+////            public void success(File file, Response response) {
+////                callback.complete(file);
+////            }
+////
+////            @Override
+////            public void failure(RetrofitError error) {
+////                callback.failure((Error) error.getBodyAs(com.co.dayron.translatoraudioapp.model.Error.class));
+////            }
+////        });
+//    }
 }

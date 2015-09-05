@@ -3,25 +3,34 @@ package com.co.dayron.translatoraudioapp.activity;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.co.dayron.translatoraudioapp.Callback;
+
 import com.co.dayron.translatoraudioapp.R;
-import com.co.dayron.translatoraudioapp.model.*;
+
+import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
+
+import com.ibm.watson.developer_cloud.text_to_speech.v1.TextToSpeech;
+import com.ibm.watson.developer_cloud.text_to_speech.v1.model.Voice;
+
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 
 public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
 
@@ -48,6 +57,11 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
     //objeto de referencia al archivo creado
     File fileAudio;
 
+    String route;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +69,12 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
 
         ButterKnife.bind(this);
 
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy =
+                    new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
 
     }
 
@@ -68,9 +88,11 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
         recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         File path = new File(Environment.getExternalStorageDirectory().getPath());
+
         try {
 
             fileAudio = File.createTempFile("audio1", ".3gp", path);
+            route = fileAudio.toString();
         } catch (IOException e) {
         }
         recorder.setOutputFile(fileAudio.getAbsolutePath());
@@ -140,18 +162,41 @@ public class AudioActivity extends AppCompatActivity implements MediaPlayer.OnCo
     @OnClick(R.id.btnsend)
     public void sendFileAudio(View view) {
 
-        Audio audio = new Audio();
-        audio.getAudioFile(fileAudio, new Callback<File>() {
-            @Override
-            public void complete(File data) {
-                File mTraslator = data;
-            }
 
-            @Override
-            public void failure(com.co.dayron.translatoraudioapp.model.Error error) {
-                Toast.makeText(getApplicationContext(), "No se logro traducir"+error.getMessaje().toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        SpeechToText service = new SpeechToText();
+        service.setUsernameAndPassword("02b03789-07c1-4d2a-8b70-3d00e0536032", "z2ypCGYef2pT");
+
+        File audio = new File(Environment.getExternalStorageDirectory().getPath()+"/Download/sample1.wav");
+        //File audio = new File(route);
+        SpeechResults transcript = service.recognize(audio, "audio/3gp; rate=44100");
+        System.out.println(transcript);
+
+
+//
+//        TextToSpeech textservice = new TextToSpeech();
+//        textservice.setUsernameAndPassword("02b03789-07c1-4d2a-8b70-3d00e0536032", "z2ypCGYef2pT");
+//
+//        textservice.synthesize(transcript.toString(), );
+//        List<Voice> voices = textservice.getVoices();
+//        System.out.println(voices);
+
+
+//        Audio audio = new Audio();
+//            audio.getAudioFile(fileAudio, new Callback<File>() {
+//                @Override
+//                public void complete(File data) {
+//                    File mTraslator = data;
+//                }
+//
+//                @Override
+//                public void failure(com.co.dayron.translatoraudioapp.model.Error error) {
+//                    Toast.makeText(getApplicationContext(), "No se logro traducir" + error.getMessaje().toString(), Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//        }
+
 
     }
+
+
 }

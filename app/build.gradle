@@ -4,6 +4,13 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+    }
+
     defaultConfig {
         applicationId "com.co.dayron.translatoraudioapp"
         minSdkVersion 17
@@ -20,8 +27,20 @@ android {
 }
 
 dependencies {
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.squareup.retrofit:retrofit:1.7.1'
+
+//    compile 'com.squareup.okhttp:okhttp:2.0.0'
+//    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+//    compile 'com.squareup.retrofit:retrofit:1.7.1'
+
+
+    //watson
+
+
+    compile 'com.ibm.watson.developer_cloud:java-wrapper:1.0.3'
+
+
 }
